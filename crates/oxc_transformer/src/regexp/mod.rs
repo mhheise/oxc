@@ -138,7 +138,7 @@ impl<'a> RegExp<'a, '_> {
             }
 
             let owned_pattern;
-            let pattern = if let Some(pattern) = regexp.regex.pattern.pattern.as_deref() {
+            let pattern = if let Some(pattern) = &regexp.regex.pattern.pattern {
                 pattern
             } else {
                 let pattern_text = regexp.regex.pattern.text.as_str();
