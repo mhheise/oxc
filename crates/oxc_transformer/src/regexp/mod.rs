@@ -127,9 +127,8 @@ impl<'a> RegExp<'a, '_> {
             unreachable!();
         };
         let regexp = regexp.as_mut();
-        let regex = &mut regexp.regex;
 
-        let flags = regex.flags;
+        let flags = regexp.regex.flags;
         let has_unsupported_flags = flags.intersects(self.unsupported_flags);
         if !has_unsupported_flags {
             if !self.some_unsupported_patterns {
@@ -139,10 +138,10 @@ impl<'a> RegExp<'a, '_> {
             }
 
             let owned_pattern;
-            let pattern = if let Some(pattern) = regex.pattern.pattern.as_deref() {
+            let pattern = if let Some(pattern) = regexp.regex.pattern.pattern.as_deref() {
                 pattern
             } else {
-                let pattern_text = regex.pattern.text.as_str();
+                let pattern_text = regexp.regex.pattern.text.as_str();
                 #[expect(clippy::cast_possible_truncation)]
                 let pattern_len = pattern_text.len() as u32;
                 let literal_span = regexp.span;
@@ -180,7 +179,11 @@ impl<'a> RegExp<'a, '_> {
         };
 
         let arguments = ctx.ast.vec_from_array([
-            Argument::from(ctx.ast.expression_string_literal(SPAN, regex.pattern.text, None)),
+            Argument::from(ctx.ast.expression_string_literal(
+                SPAN,
+                regexp.regex.pattern.text,
+                None,
+            )),
             Argument::from(ctx.ast.expression_string_literal(
                 SPAN,
                 ctx.ast.atom(flags.to_inline_string().as_str()),
