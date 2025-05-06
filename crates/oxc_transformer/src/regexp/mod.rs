@@ -138,6 +138,7 @@ impl<'a> RegExp<'a, '_> {
                 return;
             }
 
+            let owned_pattern;
             let pattern = if let Some(pattern) = regex.pattern.pattern.as_deref() {
                 pattern
             } else {
@@ -158,8 +159,8 @@ impl<'a> RegExp<'a, '_> {
                     ctx,
                 ) {
                     Ok(pattern) => {
-                        regex.pattern.pattern = Some(ctx.alloc(pattern));
-                        regex.pattern.pattern.as_ref().unwrap()
+                        owned_pattern = Some(pattern);
+                        owned_pattern.as_ref().unwrap()
                     }
                     Err(error) => {
                         self.ctx.error(error);
